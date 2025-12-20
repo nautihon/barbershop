@@ -1,0 +1,76 @@
+========================================
+  CÁC LỆNH CHẠY WEBSITE BARBERSHOP
+========================================
+
+🚀 CÁCH NHANH NHẤT (Windows):
+   Double-click file: start.bat
+   Hoặc chạy: start.bat
+
+========================================
+📋 CÁC LỆNH CƠ BẢN
+========================================
+
+1. CÀI ĐẶT LẦN ĐẦU:
+   composer install
+   copy .env.example .env
+   php artisan key:generate
+   (Sửa .env: DB_DATABASE, DB_USERNAME, DB_PASSWORD)
+   php artisan migrate --seed
+   php artisan storage:link
+
+2. CHẠY SERVER:
+   php artisan serve
+   → Truy cập: http://localhost:8000
+
+3. TẮT SERVER:
+   Cách 1: Nhấn Ctrl+C trong terminal
+   Cách 2: Double-click file: stop.bat
+   Cách 3: Chạy: stop.bat
+
+4. CLEAR CACHE (khi có lỗi):
+   php artisan optimize:clear
+
+5. RESET DATABASE:
+   php artisan migrate:fresh --seed
+
+========================================
+🔑 TÀI KHOẢN MẶC ĐỊNH
+========================================
+
+Admin:  admin@barbershop.com / password
+Staff:  staff@barbershop.com / password
+User:   user@example.com / password
+
+========================================
+📁 CÁC FILE HƯỚNG DẪN
+========================================
+
+- QUICK_START.md        → Hướng dẫn nhanh 3 bước
+- HUONG_DAN_LENH.md     → Hướng dẫn chi tiết đầy đủ
+- start.bat             → Script chạy server (Windows)
+- start.ps1              → Script chạy server (PowerShell)
+- start.sh               → Script chạy server (Linux/Mac)
+- stop.bat               → Script tắt server (Windows)
+- stop.ps1                → Script tắt server (PowerShell)
+- stop.sh                 → Script tắt server (Linux/Mac)
+
+========================================
+⚠️ XỬ LÝ LỖI THƯỜNG GẶP
+========================================
+
+Lỗi database:
+  → Kiểm tra MySQL đang chạy
+  → Kiểm tra .env (DB_DATABASE, DB_USERNAME, DB_PASSWORD)
+
+Lỗi cache:
+  → php artisan optimize:clear
+
+Lỗi storage:
+  → php artisan storage:link
+
+Lỗi class not found:
+  → composer dump-autoload
+  → php artisan optimize:clear
+
+========================================
+
