@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -30,6 +32,20 @@ class AuthController extends Controller
             $request->session()->regenerate();
             
             $user = Auth::user();
+            
+            // Khôi phục giỏ hàng từ database vào session (chỉ cho user)
+            if ($user->isUser()) {
+                $cartItems = $user->cartItems()->with('product')->get();
+                $cart = [];
+                
+                foreach ($cartItems as $item) {
+                    if ($item->product && $item->product->is_active) {
+                        $cart[$item->product_id] = $item->quantity;
+                    }
+                }
+                
+                Session::put('cart', $cart);
+            }
             
             // Redirect based on role
             if ($user->isAdmin()) {
@@ -79,6 +95,23 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        // Lưu giỏ hàng vào database trước khi đăng xuất (nếu user đã đăng nhập)
+        if (Auth::check() && Auth::user()->isUser()) {
+            $cart = Session::get('cart', []);
+            
+            foreach ($cart as $productId => $quantity) {
+                CartItem::updateOrCreate(
+                    [
+                        'user_id' => Auth::id(),
+                        'product_id' => $productId,
+                    ],
+                    [
+                        'quantity' => $quantity,
+                    ]
+                );
+            }
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

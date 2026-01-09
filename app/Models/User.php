@@ -68,6 +68,11 @@ class User extends Authenticatable
         return $this->hasOne(Staff::class);
     }
 
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
+
     // Helper methods
     public function isAdmin()
     {

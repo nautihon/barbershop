@@ -78,6 +78,17 @@
                         <p><strong>Ghi chú:</strong> {{ $order->notes }}</p>
                     @endif
                     <p><strong>Ngày đặt:</strong> {{ $order->created_at->format('d/m/Y H:i') }}</p>
+                    
+                    @if($order->status == 'pending')
+                        <div class="mt-3">
+                            <form action="{{ route('user.orders.cancel', $order) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                                @csrf
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <i class="bi bi-x-circle"></i> Hủy đơn hàng
+                                </button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

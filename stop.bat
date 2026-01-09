@@ -1,42 +1,40 @@
 @echo off
+title Barbershop Server - Stop
+color 0C
+
+echo.
 echo ========================================
-echo   BARBERSHOP - STOP SERVER
+echo   STOPPING BARBERSHOP SERVER
 echo ========================================
 echo.
 
-REM Find and kill PHP processes running on port 8000
-echo [INFO] Stopping Laravel server on port 8000...
-echo.
-
-REM Find process using port 8000
-for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8000 ^| findstr LISTENING') do (
-    set PID=%%a
-    echo [INFO] Found process ID: %%a
-    echo [INFO] Stopping process...
+REM Fast method: Kill PHP processes on port 8000
+set FOUND=0
+for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr :8000 ^| findstr LISTENING') do (
     taskkill /F /PID %%a >nul 2>&1
-    if errorlevel 1 (
-        echo [WARNING] Could not stop process. It may have already stopped.
-    ) else (
-        echo [SUCCESS] Server stopped successfully!
+    if not errorlevel 1 (
+        echo [SUCCESS] Stopped process PID: %%a
+        set FOUND=1
     )
 )
 
-REM Alternative: Kill all PHP processes (more aggressive)
-echo.
-echo [INFO] Checking for any remaining PHP artisan processes...
-tasklist /FI "IMAGENAME eq php.exe" 2>NUL | find /I /N "php.exe">NUL
-if "%ERRORLEVEL%"=="0" (
-    echo [INFO] Found PHP processes. Stopping...
-    taskkill /F /IM php.exe >nul 2>&1
-    echo [SUCCESS] All PHP processes stopped!
-) else (
-    echo [INFO] No PHP processes found.
+REM If no process found on port 8000, try killing all php.exe (artisan serve)
+if %FOUND%==0 (
+    tasklist /FI "IMAGENAME eq php.exe" 2>NUL | find /I "php.exe" >NUL
+    if not errorlevel 1 (
+        echo [INFO] Stopping PHP artisan processes...
+        taskkill /F /IM php.exe >nul 2>&1
+        if not errorlevel 1 (
+            echo [SUCCESS] All PHP processes stopped!
+        )
+    ) else (
+        echo [INFO] No server process found.
+    )
 )
 
 echo.
 echo ========================================
-echo [INFO] Server stopped!
+echo   SERVER STOPPED
 echo ========================================
-echo.
-pause
+timeout /t 2 >nul
 

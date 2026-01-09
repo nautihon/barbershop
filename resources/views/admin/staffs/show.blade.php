@@ -28,8 +28,11 @@
                     @endif
                     <h3 class="mt-3">{{ $staff->name }}</h3>
                     <p class="text-muted">{{ $staff->email }}</p>
-                    <span class="badge bg-{{ $staff->status == 'active' ? 'success' : 'secondary' }}">
-                        {{ $staff->status == 'active' ? 'Hoạt động' : 'Tạm dừng' }}
+                    @php
+                        $dynamicStatus = $staff->dynamic_status;
+                    @endphp
+                    <span class="badge bg-{{ $dynamicStatus == 'active' ? 'success' : 'secondary' }}" title="{{ $dynamicStatus == 'active' ? 'Đang hoạt động hôm nay' : 'Tạm ngừng hôm nay (không có lịch làm việc hoặc đã xin nghỉ)' }}">
+                        {{ $dynamicStatus == 'active' ? 'Hoạt động' : 'Tạm ngừng' }}
                     </span>
                 </div>
             </div>

@@ -4,13 +4,61 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    /**
+     * Đồng bộ giỏ hàng từ database vào session
+     */
+    private function syncCartFromDatabase()
+    {
+        if (Auth::check()) {
+            $cartItems = Auth::user()->cartItems()->with('product')->get();
+            $cart = [];
+            
+            foreach ($cartItems as $item) {
+                if ($item->product && $item->product->is_active) {
+                    $cart[$item->product_id] = $item->quantity;
+                }
+            }
+            
+            Session::put('cart', $cart);
+        }
+    }
+
+    /**
+     * Lưu giỏ hàng từ session vào database
+     */
+    private function saveCartToDatabase()
+    {
+        if (Auth::check()) {
+            $cart = Session::get('cart', []);
+            
+            foreach ($cart as $productId => $quantity) {
+                CartItem::updateOrCreate(
+                    [
+                        'user_id' => Auth::id(),
+                        'product_id' => $productId,
+                    ],
+                    [
+                        'quantity' => $quantity,
+                    ]
+                );
+            }
+        }
+    }
+
     public function index()
     {
+        // Nếu user đã đăng nhập, đồng bộ từ database
+        if (Auth::check()) {
+            $this->syncCartFromDatabase();
+        }
+
         $cart = Session::get('cart', []);
         $products = [];
         $total = 0;
@@ -30,6 +78,12 @@ class CartController extends Controller
             } else {
                 // Xóa sản phẩm không hợp lệ khỏi giỏ hàng
                 unset($cart[$id]);
+                // Xóa khỏi database nếu user đã đăng nhập
+                if (Auth::check()) {
+                    CartItem::where('user_id', Auth::id())
+                        ->where('product_id', $id)
+                        ->delete();
+                }
             }
         }
         
@@ -69,6 +123,19 @@ class CartController extends Controller
         $cart[$product->id] = $newQuantity;
         Session::put('cart', $cart);
 
+        // Lưu vào database nếu user đã đăng nhập
+        if (Auth::check()) {
+            CartItem::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'product_id' => $product->id,
+                ],
+                [
+                    'quantity' => $newQuantity,
+                ]
+            );
+        }
+
         return back()->with('success', 'Sản phẩm đã được thêm vào giỏ hàng.');
     }
 
@@ -88,6 +155,19 @@ class CartController extends Controller
         $cart[$id] = $request->quantity;
         Session::put('cart', $cart);
 
+        // Cập nhật database nếu user đã đăng nhập
+        if (Auth::check()) {
+            CartItem::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'product_id' => $id,
+                ],
+                [
+                    'quantity' => $request->quantity,
+                ]
+            );
+        }
+
         return back()->with('success', 'Giỏ hàng đã được cập nhật.');
     }
 
@@ -96,6 +176,13 @@ class CartController extends Controller
         $cart = Session::get('cart', []);
         unset($cart[$id]);
         Session::put('cart', $cart);
+
+        // Xóa khỏi database nếu user đã đăng nhập
+        if (Auth::check()) {
+            CartItem::where('user_id', Auth::id())
+                ->where('product_id', $id)
+                ->delete();
+        }
 
         return back()->with('success', 'Sản phẩm đã được xóa khỏi giỏ hàng.');
     }

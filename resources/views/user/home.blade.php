@@ -45,8 +45,116 @@
         background: linear-gradient(135deg, rgba(26, 26, 26, 0.85) 0%, rgba(44, 44, 44, 0.85) 100%),
                     url('{{ asset("storage/hero-background.jpg") }}') center center / cover no-repeat !important;
     } */
+    
+    /* Promotion Banner Styles */
+    .promotion-banner {
+        padding: 80px 0;
+        background-color: var(--bg-light);
+    }
+    
+    .promotion-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        padding: 3rem 2rem;
+        text-align: center;
+        border-top: 4px solid var(--secondary-color);
+    }
+    
+    .promotion-icon {
+        font-size: 3.5rem;
+        color: var(--secondary-color);
+        margin-bottom: 1.5rem;
+    }
+    
+    .promotion-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .promotion-description {
+        font-size: 1.1rem;
+        color: #666;
+        line-height: 1.8;
+        margin-bottom: 2rem;
+    }
+    
+    .promotion-features {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+    
+    .promotion-feature {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background-color: var(--bg-light);
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .promotion-feature:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-color: var(--secondary-color);
+    }
+    
+    .promotion-feature i {
+        font-size: 1.5rem;
+        color: var(--secondary-color);
+    }
+    
+    .promotion-feature strong {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    .promotion-feature span {
+        color: var(--text-dark);
+    }
 </style>
 @endpush
+
+<!-- Promotion Banner Section -->
+<section class="promotion-banner">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="promotion-card">
+                    <div class="promotion-icon">
+                        <i class="bi bi-gift-fill"></i>
+                    </div>
+                    <h2 class="promotion-title">Chương trình ưu đãi đặc biệt</h2>
+                    <p class="promotion-description">
+                        Mua hàng và sử dụng dịch vụ để tích điểm, đổi điểm lấy giảm giá cho các lần mua sau!
+                    </p>
+                    <div class="promotion-features">
+                        <div class="promotion-feature">
+                            <i class="bi bi-cart-check"></i>
+                            <span><strong>Mua hàng</strong> tích điểm</span>
+                        </div>
+                        <div class="promotion-feature">
+                            <i class="bi bi-scissors"></i>
+                            <span><strong>Sử dụng dịch vụ</strong> tích điểm</span>
+                        </div>
+                        <div class="promotion-feature">
+                            <i class="bi bi-percent"></i>
+                            <span><strong>Đổi điểm</strong> lấy giảm giá</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- Features Section -->
 <section class="feature-section">
@@ -276,7 +384,7 @@
                 <div class="contact-info">
                     <div class="mb-3">
                         <i class="bi bi-geo-alt-fill me-2" style="font-size: 1.2rem;"></i>
-                        <strong>Địa chỉ:</strong> 123 Đường ABC, Quận XYZ, TP.HCM
+                        <strong>Địa chỉ:</strong> 261/23 Thới tây 1, Tân Hiệp, Hóc Môn, Thành phố Hồ Chí Minh
                     </div>
                     <div class="mb-3">
                         <i class="bi bi-telephone-fill me-2" style="font-size: 1.2rem;"></i>
@@ -289,23 +397,23 @@
                     <div class="mb-3">
                         <i class="bi bi-clock-fill me-2" style="font-size: 1.2rem;"></i>
                         <strong>Giờ làm việc:</strong><br>
-                        <span style="margin-left: 1.8rem;">Thứ 2 - Chủ nhật: 8:00 - 20:00</span>
+                        <span style="margin-left: 1.8rem;">Thứ 2 - Chủ nhật: 9:00 - 19:00</span>
                     </div>
                     <div class="mt-4">
                         <h5 style="color: var(--text-light); margin-bottom: 1rem;">Theo dõi chúng tôi</h5>
                         <div class="social-links">
-                            <a href="#" class="text-light me-3" style="font-size: 1.5rem;" title="Facebook">
+                            <a href="https://www.facebook.com/tiemtocnamduc" class="text-light me-3" style="font-size: 1.5rem;" title="Facebook">
                                 <i class="bi bi-facebook"></i>
                             </a>
-                            <a href="#" class="text-light me-3" style="font-size: 1.5rem;" title="Instagram">
+                            <a href="instagram.com/Duc.dami" class="text-light me-3" style="font-size: 1.5rem;" title="Instagram">
                                 <i class="bi bi-instagram"></i>
                             </a>
-                            <a href="#" class="text-light me-3" style="font-size: 1.5rem;" title="Twitter">
-                                <i class="bi bi-twitter"></i>
+                            <a href="tiktok.com/@Duc.dami" class="text-light me-3" style="font-size: 1.5rem;" title="Tiktok">
+                                <i class="bi bi-tiktok"></i>
                             </a>
-                            <a href="#" class="text-light" style="font-size: 1.5rem;" title="YouTube">
+                            <!-- <a href="#" class="text-light" style="font-size: 1.5rem;" title="YouTube">
                                 <i class="bi bi-youtube"></i>
-                            </a>
+                            </a> -->
                         </div>
                     </div>
                 </div>

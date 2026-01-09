@@ -8,6 +8,36 @@
         <h2><i class="bi bi-calendar-x"></i> Quản lý đơn xin nghỉ</h2>
     </div>
     
+    <div class="card mb-3">
+        <div class="card-body">
+            <form method="GET" action="{{ route('admin.leave-requests.index') }}" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="date" class="form-label">Lọc theo ngày</label>
+                    <input type="date" 
+                           class="form-control" 
+                           id="date" 
+                           name="date" 
+                           value="{{ $selectedDate }}"
+                           required>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-funnel"></i> Lọc
+                    </button>
+                    <a href="{{ route('admin.leave-requests.index') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-clockwise"></i> Hôm nay
+                    </a>
+                </div>
+                <div class="col-md-4 text-end">
+                    <span class="text-muted">
+                        <i class="bi bi-calendar-check"></i> 
+                        Đang hiển thị: {{ \Carbon\Carbon::parse($selectedDate)->format('d/m/Y') }}
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <div class="card">
         <div class="card-body">
             @if($leaveRequests->count() > 0)

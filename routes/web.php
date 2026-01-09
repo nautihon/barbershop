@@ -51,6 +51,8 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(f
     // Appointments
     Route::get('/appointments', [UserAppointmentController::class, 'index'])->name('appointments.index');
     Route::get('/appointments/create', [UserAppointmentController::class, 'create'])->name('appointments.create');
+    Route::get('/appointments/available-staffs', [UserAppointmentController::class, 'getAvailableStaffs'])->name('appointments.available-staffs');
+    Route::get('/appointments/booked-times', [UserAppointmentController::class, 'getBookedTimeSlots'])->name('appointments.booked-times');
     Route::post('/appointments', [UserAppointmentController::class, 'store'])->name('appointments.store');
     Route::get('/appointments/{appointment}', [UserAppointmentController::class, 'show'])->name('appointments.show');
     Route::put('/appointments/{appointment}', [UserAppointmentController::class, 'update'])->name('appointments.update');
@@ -70,6 +72,7 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(f
     Route::get('/orders', [UserOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [UserOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders', [UserOrderController::class, 'store'])->name('orders.store');
+    Route::post('/orders/{order}/cancel', [UserOrderController::class, 'cancel'])->name('orders.cancel');
     
     // Reviews
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
@@ -129,6 +132,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/appointments/{appointment}', [AdminAppointmentController::class, 'show'])->name('appointments.show');
     Route::put('/appointments/{appointment}/confirm', [AdminAppointmentController::class, 'confirm'])->name('appointments.confirm');
     Route::put('/appointments/{appointment}/cancel', [AdminAppointmentController::class, 'cancel'])->name('appointments.cancel');
+    Route::delete('/appointments/{appointment}', [AdminAppointmentController::class, 'destroy'])->name('appointments.destroy');
     
     // Invoices
     Route::get('/appointments/{appointment}/invoice', [InvoiceController::class, 'show'])->name('appointments.invoice');

@@ -68,13 +68,13 @@ class DashboardController extends Controller
         ];
 
         $recent_appointments = Appointment::with(['user', 'staff', 'service'])
-            ->latest()
-            ->take(10)
+            ->whereDate('appointment_date', now()->toDateString())
+            ->orderBy('appointment_time', 'asc')
             ->get();
 
         $recent_orders = Order::with(['user'])
+            ->whereDate('created_at', now()->toDateString())
             ->latest()
-            ->take(10)
             ->get();
 
         $popular_services = Service::withCount('appointments')
@@ -89,8 +89,8 @@ class DashboardController extends Controller
 
         $recent_leave_requests = StaffLeaveRequest::with('staff')
             ->whereHas('staff')
+            ->whereDate('created_at', now()->toDateString())
             ->latest()
-            ->take(5)
             ->get();
 
         return view('admin.dashboard', compact('stats', 'recent_appointments', 'recent_orders', 'popular_services', 'popular_staff', 'recent_leave_requests'));

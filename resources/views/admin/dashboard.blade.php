@@ -91,49 +91,100 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5>Lịch hẹn gần đây</h5>
+                    <h5 class="mb-0">Lịch hẹn hôm nay</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     @if($recent_appointments->count() > 0)
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Khách hàng</th>
-                                    <th>Thợ</th>
-                                    <th>Dịch vụ</th>
-                                    <th>Ngày</th>
-                                    <th>Trạng thái</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($recent_appointments as $appointment)
-                                <tr>
-                                    <td>{{ $appointment->user->name ?? 'N/A' }}</td>
-                                    <td>{{ $appointment->staff->name ?? 'N/A' }}</td>
-                                    <td>{{ $appointment->service->name ?? 'N/A' }}</td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('d/m/Y') }} 
-                                        @if($appointment->appointment_time)
-                                            {{ $appointment->appointment_time }}
-                                        @else
-                                            N/A
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{{ $appointment->status == 'confirmed' ? 'success' : ($appointment->status == 'pending' ? 'warning' : ($appointment->status == 'completed' ? 'info' : 'secondary')) }}">
-                                            @if($appointment->status == 'pending') Chờ xác nhận
-                                            @elseif($appointment->status == 'confirmed') Đã xác nhận
-                                            @elseif($appointment->status == 'completed') Hoàn thành
-                                            @else Đã hủy
-                                            @endif
-                                        </span>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <style>
+                                /* Custom scrollbar styling */
+                                .table-responsive::-webkit-scrollbar {
+                                    width: 8px;
+                                }
+                                
+                                .table-responsive::-webkit-scrollbar-track {
+                                    background: #f1f1f1;
+                                    border-radius: 10px;
+                                }
+                                
+                                .table-responsive::-webkit-scrollbar-thumb {
+                                    background: #888;
+                                    border-radius: 10px;
+                                }
+                                
+                                .table-responsive::-webkit-scrollbar-thumb:hover {
+                                    background: #555;
+                                }
+                                
+                                /* Sticky header styling */
+                                .table-responsive table thead {
+                                    position: sticky;
+                                    top: 0;
+                                    z-index: 10;
+                                    background-color: #f8f9fa;
+                                }
+                                
+                                .table-responsive table thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom: 2px solid #dee2e6;
+                                    padding: 12px;
+                                    font-weight: 600;
+                                    color: #495057;
+                                }
+                                
+                                .table-responsive table tbody td {
+                                    padding: 10px 12px;
+                                    vertical-align: middle;
+                                }
+                                
+                                .table-responsive table tbody tr:hover {
+                                    background-color: #f8f9fa;
+                                }
+                            </style>
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="min-width: 120px;">Khách hàng</th>
+                                        <th style="min-width: 100px;">Thợ</th>
+                                        <th style="min-width: 120px;">Dịch vụ</th>
+                                        <th style="min-width: 120px;">Ngày</th>
+                                        <th style="min-width: 100px;">Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($recent_appointments as $appointment)
+                                    <tr>
+                                        <td>{{ $appointment->user->name ?? 'N/A' }}</td>
+                                        <td>{{ $appointment->staff->name ?? 'N/A' }}</td>
+                                        <td>{{ $appointment->service->name ?? 'N/A' }}</td>
+                                        <td>
+                                            <small>
+                                                {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('d/m/Y') }} 
+                                                @if($appointment->appointment_time)
+                                                    <br>{{ $appointment->appointment_time }}
+                                                @else
+                                                    <br>N/A
+                                                @endif
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{{ $appointment->status == 'confirmed' ? 'success' : ($appointment->status == 'pending' ? 'warning' : ($appointment->status == 'completed' ? 'info' : 'secondary')) }}">
+                                                @if($appointment->status == 'pending') Chờ xác nhận
+                                                @elseif($appointment->status == 'confirmed') Đã xác nhận
+                                                @elseif($appointment->status == 'completed') Hoàn thành
+                                                @else Đã hủy
+                                                @endif
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     @else
-                        <p class="text-muted text-center">Chưa có lịch hẹn nào</p>
+                        <div class="p-4">
+                            <p class="text-muted text-center mb-0">Không có lịch hẹn nào trong ngày hôm nay</p>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -185,7 +236,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Đơn hàng gần đây</h5>
+                    <h5 class="mb-0">Đơn hàng hôm nay</h5>
                     <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-primary">Xem tất cả</a>
                 </div>
                 <div class="card-body">
@@ -223,7 +274,7 @@
                             </tbody>
                         </table>
                     @else
-                        <p class="text-muted text-center">Chưa có đơn hàng nào</p>
+                        <p class="text-muted text-center">Không có đơn hàng nào trong ngày hôm nay</p>
                     @endif
                 </div>
             </div>
@@ -232,7 +283,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Đơn xin nghỉ gần đây</h5>
+                    <h5 class="mb-0">Đơn xin nghỉ hôm nay</h5>
                     <a href="{{ route('admin.leave-requests.index') }}" class="btn btn-sm btn-primary">Xem tất cả</a>
                 </div>
                 <div class="card-body">
@@ -271,7 +322,7 @@
                             </tbody>
                         </table>
                     @else
-                        <p class="text-muted text-center">Chưa có đơn xin nghỉ nào</p>
+                        <p class="text-muted text-center">Không có đơn xin nghỉ nào trong ngày hôm nay</p>
                     @endif
                 </div>
             </div>

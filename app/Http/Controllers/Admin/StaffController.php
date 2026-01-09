@@ -172,7 +172,12 @@ class StaffController extends Controller
             }
         }
 
+        // Tự động cập nhật status dựa trên lịch làm việc và ngày hiện tại
+        $today = date('Y-m-d');
+        $dynamicStatus = $staff->dynamic_status;
+        $staff->update(['status' => $dynamicStatus]);
+
         return redirect()->route('admin.staffs.show', $staff)
-            ->with('success', 'Lịch làm việc đã được cập nhật.');
+            ->with('success', 'Lịch làm việc đã được cập nhật. Trạng thái hoạt động đã được tự động cập nhật.');
     }
 }

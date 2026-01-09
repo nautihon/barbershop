@@ -42,8 +42,11 @@
                         <td>{{ $staff->phone }}</td>
                         <td>{{ Str::limit($staff->specialization, 30) }}</td>
                         <td>
-                            <span class="badge bg-{{ $staff->status == 'active' ? 'success' : 'secondary' }}">
-                                {{ $staff->status == 'active' ? 'Hoạt động' : 'Tạm dừng' }}
+                            @php
+                                $dynamicStatus = $staff->dynamic_status;
+                            @endphp
+                            <span class="badge bg-{{ $dynamicStatus == 'active' ? 'success' : 'secondary' }}" title="{{ $dynamicStatus == 'active' ? 'Đang hoạt động hôm nay' : 'Tạm ngừng hôm nay (không có lịch làm việc hoặc đã xin nghỉ)' }}">
+                                {{ $dynamicStatus == 'active' ? 'Hoạt động' : 'Tạm ngừng' }}
                             </span>
                         </td>
                         <td>

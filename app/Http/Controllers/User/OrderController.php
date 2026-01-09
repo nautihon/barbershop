@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -120,16 +121,59 @@ class OrderController extends Controller
         // Tích điểm tích lũy (nếu chưa sử dụng điểm)
         $loyaltyPointsEarned = 0;
         if ($order->loyalty_points_used == 0) {
-            // Tích điểm: 1% giá trị đơn hàng (làm tròn)
-            $loyaltyPointsEarned = intval($total / 100);
+            // Tích điểm: 100 điểm cố định cho mỗi đơn hàng
+            $loyaltyPointsEarned = 100;
             Auth::user()->increment('loyalty_points', $loyaltyPointsEarned);
             $order->update(['loyalty_points_earned' => $loyaltyPointsEarned]);
         }
 
+        // Xóa giỏ hàng khỏi session
         Session::forget('cart');
+        
+        // Xóa giỏ hàng khỏi database
+        CartItem::where('user_id', Auth::id())->delete();
 
         return redirect()->route('user.orders.show', $order)
             ->with('success', 'Đơn hàng đã được tạo thành công!' . 
                 ($loyaltyPointsEarned > 0 ? " Bạn đã tích được {$loyaltyPointsEarned} điểm." : ''));
+    }
+
+    public function cancel(Order $order)
+    {
+        // Kiểm tra quyền truy cập
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Chỉ cho phép hủy nếu đơn hàng chưa được xác nhận
+        if ($order->status !== 'pending') {
+            return back()->withErrors(['error' => 'Chỉ có thể hủy đơn hàng khi chưa được xác nhận.']);
+        }
+
+        // Hoàn lại số lượng sản phẩm vào kho
+        foreach ($order->orderItems as $item) {
+            $product = Product::find($item->product_id);
+            if ($product) {
+                $product->increment('stock', $item->quantity);
+            }
+        }
+
+        $user = Auth::user();
+
+        // Hoàn lại điểm tích lũy nếu đã sử dụng
+        if ($order->loyalty_points_used > 0) {
+            $user->increment('loyalty_points', $order->loyalty_points_used);
+        }
+
+        // Trừ điểm tích lũy nếu đã tích (nếu có)
+        if ($order->loyalty_points_earned > 0) {
+            $user->decrement('loyalty_points', $order->loyalty_points_earned);
+        }
+
+        // Cập nhật trạng thái đơn hàng thành 'cancelled'
+        $order->update(['status' => 'cancelled']);
+
+        return redirect()->route('user.orders.show', $order)
+            ->with('success', 'Đơn hàng đã được hủy thành công.');
     }
 }

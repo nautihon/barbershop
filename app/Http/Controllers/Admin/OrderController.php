@@ -8,13 +8,17 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with(['user', 'orderItems.product'])
-            ->latest()
-            ->paginate(15);
+        $query = Order::with(['user', 'orderItems.product']);
         
-        return view('admin.orders.index', compact('orders'));
+        // Mặc định hiển thị đơn trong ngày hôm nay, hoặc lọc theo ngày được chọn
+        $selectedDate = $request->input('date', now()->toDateString());
+        $query->whereDate('created_at', $selectedDate);
+        
+        $orders = $query->latest()->paginate(15)->withQueryString();
+        
+        return view('admin.orders.index', compact('orders', 'selectedDate'));
     }
 
     public function show(Order $order)

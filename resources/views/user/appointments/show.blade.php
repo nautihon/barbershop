@@ -59,8 +59,8 @@
                     
                     @if($appointment->status == 'pending')
                         <div class="mt-3">
-                            <a href="{{ route('user.appointments.index') }}" class="btn btn-primary">Chỉnh sửa</a>
-                            <form action="{{ route('user.appointments.destroy', $appointment) }}" method="POST" class="d-inline">
+                            <!-- <a href="{{ route('user.appointments.index') }}" class="btn btn-primary">Chỉnh sửa</a>
+                            <form action="{{ route('user.appointments.destroy', $appointment) }}" method="POST" class="d-inline"> -->
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy lịch hẹn?')">
